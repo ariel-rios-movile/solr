@@ -1,0 +1,48 @@
+<h1 id="apache-solr">Apache Solr</h1>
+<h2 id="description">Description</h2>
+<p>It is a search engine based on the Lucene project from The Apache Software Foundation. Main features:</p>
+<ul>
+<li>Full-text search.</li>
+<li>Optimization for high traffic sites.</li>
+<li>Content negotiation: XML &amp; JSON.</li>
+<li>Control over web UI.</li>
+<li>Scalable through node farm.</li>
+<li>Really quick indexing (near real time).</li>
+<li><p>On cluster configuration:</p></li>
+<li>Central configuration for all nodes.</li>
+<li><p>Automatic load balancing and fail-over for queries.</p></li>
+</ul>
+<h2 id="some-concepts-before-starting">Some concepts before starting</h2>
+<p><strong>Query</strong> The term used to filter indexed content to construct result.</p>
+<p><strong>Core</strong> An index installation with related files (configuration and transaction logs). A single Solr instance can handle multiple cores at the same time.</p>
+<p><strong>Facet</strong> An arrangement of search results into categories based on indexed terms. It can use query terms (as used in content) to filter facet results, field names and ranges.</p>
+<h2 id="getting-started">Getting started</h2>
+<p>When Solr configured as servers cluster it is called SolrCloud</p>
+<h3 id="starting-instances">Starting instances</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">~/solr-6.3.0</span>$ <span class="ex">./bin/solr</span> start -e cloud</code></pre></div>
+<ul>
+<li>Web UI is ready on <a href="http://192.168.1.116:7574/solr/">here</a>.</li>
+<li>See cloud architecture <a href="http://192.168.1.116:7574/solr/#/~cloud">here</a>.</li>
+</ul>
+<h3 id="indexing-a-directory">Indexing a directory</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">~/solr-6.3.0</span>$ <span class="ex">./bin/post</span> -c gettingstarted docs/</code></pre></div>
+<h3 id="indexing-formatted-content">Indexing formatted content</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">~/solr-6.3.0</span>$ <span class="ex">./bin/post</span> -c gettingstarted example/exampledocs/mem.xml
+<span class="ex">~/solr-6.3.0</span>$ <span class="ex">./bin/post</span> -c gettingstarted example/exampledocs/books.json</code></pre></div>
+<p>Each item in those files will be treated as a single document.</p>
+<h3 id="querying-content-through-cli">Querying content through CLI</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">~/solr-6.3.0</span>$ <span class="ex">curl</span> <span class="st">&quot;http://localhost:8983/solr/gettingstarted/select?indent=on&amp;q=%22in%20Action%22&amp;wt=json&quot;</span>
+<span class="ex">~/solr-6.3.0</span>$ <span class="ex">curl</span> <span class="st">&quot;http://localhost:8983/solr/gettingstarted/select?indent=on&amp;q=%22in%20Action%22&amp;wt=xml&quot;</span></code></pre></div>
+<h4 id="querying-facets-fields-through-cli">Querying facets' fields through CLI</h4>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">~/solr-6.3.0</span>$ <span class="ex">curl</span> <span class="st">&#39;http://localhost:8983/solr/gettingstarted/select?wt=json&amp;indent=true&amp;q=*:*&amp;rows=0&#39;</span>\
+<span class="st">&#39;&amp;facet=true&amp;facet.field=manu_id_s&#39;</span></code></pre></div>
+<h4 id="querying-facet-range-through-cli">Querying facet range through CLI</h4>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">~/solr-6.3.0</span>$ <span class="ex">curl</span> <span class="st">&#39;http://localhost:8983/solr/gettingstarted/select?q=*:*&amp;wt=json&amp;indent=on&amp;rows=0&#39;</span>\
+<span class="st">&#39;&amp;facet=true&#39;</span>\
+<span class="st">&#39;&amp;facet.range=price&#39;</span>\
+<span class="st">&#39;&amp;f.price.facet.range.start=0&#39;</span>\
+<span class="st">&#39;&amp;f.price.facet.range.end=600&#39;</span>\
+<span class="st">&#39;&amp;f.price.facet.range.gap=50&#39;</span>\
+<span class="st">&#39;&amp;facet.range.other=after&#39;</span></code></pre></div>
+<h1 id="solr-vs-elasticsearch">Solr vs ElasticSearch?</h1>
+<p><a href="http://solr-vs-elasticsearch.com/">See comparation table.</a></p>
